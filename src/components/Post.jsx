@@ -10,19 +10,24 @@ function Post(){
     const postID = useParams().postID;
     const [post, setPost] = useState()
     const [comments, setComments] = useState()
-    useEffect(()=>{
-        //On Mount:
-        console.log(postID);
-        fetch(`https://jsonplaceholder.typicode.com/posts/${postID}`).then((res) => res.json()).then((resPost) => {
+
+    async function fetchPostData(){
+        await fetch(`https://jsonplaceholder.typicode.com/posts/${postID}`).then((res) => res.json()).then((resPost) => {
             setPost(resPost)
             console.log("post", resPost);
         })
         
-        fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postID}`).then((res) => res.json()).then((resComments) => {
+        await fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postID}`).then((res) => res.json()).then((resComments) => {
             setComments(resComments)
             console.log("Comments",resComments);
         })
 
+    }
+
+    useEffect(()=>{
+        //On Mount:
+        console.log(postID);
+        fetchPostData();
     }, [])
 
     function getPostRenderInfo(){
@@ -39,7 +44,7 @@ function Post(){
             <div>
                 <h2>Comments:</h2>
                 <ul>
-                    {comments.map((comment) => <Comment commentData={comment} />)}
+                    {comments.map((comment) => <Comment key={comment.id} commentData={comment} />)}
                 </ul>
             </div>
         )

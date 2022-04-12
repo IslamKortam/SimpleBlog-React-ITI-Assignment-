@@ -4,25 +4,30 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-function Author() {
+ function Author() {
     const authorID = useParams().id;
     const [author, setAuthor] = useState()
-    const [posts, setPosts] = useState([])
-    useEffect(()=>{
-        //On Mount:
-        console.log(authorID);
+    const [posts, setPosts] = useState()
 
-        fetch(`https://jsonplaceholder.typicode.com/users/${authorID}`).then((res) => res.json()).then((resAuthor) => {
+    async function fetchData(){
+        await fetch(`https://jsonplaceholder.typicode.com/users/${authorID}`).then((res) => res.json()).then((resAuthor) => {
             //setAuthors(resAuthor)
             setAuthor(resAuthor)
             console.log(resAuthor);
         })
         
-        fetch(`https://jsonplaceholder.typicode.com/users/${authorID}/posts`).then((res) => res.json()).then((resPosts) => {
+        await fetch(`https://jsonplaceholder.typicode.com/users/${authorID}/posts`).then((res) => res.json()).then((resPosts) => {
             //setAuthors(resAuthor)
             setPosts(resPosts)
             console.log(resPosts);
         })
+    }
+
+    useEffect(()=>{
+        //On Mount:
+        console.log(authorID);
+        fetchData();
+
     }, [])
 
 
